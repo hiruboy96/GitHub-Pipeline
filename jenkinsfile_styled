@@ -1,0 +1,93 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Starting the Build stage...'
+                // Use a build automation tool (e.g., Maven) to build your code
+                // Example: sh 'mvn clean package'
+                echo 'Build completed successfully.'
+            }
+        }
+        stage('Unit and Integration Tests') {
+            steps {
+                echo 'Starting the Unit and Integration Tests stage...'
+                // Use test automation tools for unit and integration tests (e.g., JUnit, Selenium)
+                echo 'Unit and Integration Tests completed successfully.'
+            }
+        }
+        stage('Code Analysis') {
+            steps {
+                echo 'Starting the Code Analysis stage...'
+                // Integrate a code analysis tool (e.g., SonarQube, Checkstyle)
+                // Example: sh 'sonar-scanner'
+                echo 'Code Analysis completed successfully.'
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                echo 'Starting the Security Scan stage...'
+                // Integrate a security scanning tool (e.g., OWASP ZAP, Nessus)
+                // Example: sh 'zap-cli --quick-scan --baseline mybaseline.html -u https://example.com'
+                echo 'Security Scan completed successfully.'
+            }
+        }
+        stage('Deploy to Staging') {
+            steps {
+                echo 'Starting the Deploy to Staging stage...'
+                // Deploy your application to a staging server (e.g., AWS EC2)
+                // Example: sh 'aws s3 cp myapp.war s3://my-staging-bucket/'
+                echo 'Deployment to Staging completed successfully.'
+            }
+        }
+        stage('Integration Tests on Staging') {
+            steps {
+                echo 'Starting the Integration Tests on Staging stage...'
+                // Run integration tests on the staging environment
+                echo 'Integration Tests on Staging completed successfully.'
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                echo 'Starting the Deploy to Production stage...'
+                // Deploy your application to a production server (e.g., AWS EC2)
+                // Example: sh 'aws s3 cp myapp.war s3://my-production-bucket/'
+                echo 'Deployment to Production completed successfully.'
+            }
+        }
+    }
+    post {
+        failure {
+            // Send a failure notification email with styled content
+            emailext subject: 'Pipeline Failed',
+                body: '''
+                <html>
+                <body>
+                    <h2 style="color: red;">Pipeline Failed</h2>
+                    <p style="font-size: 16px;">The Jenkins pipeline has failed. Please check the logs for details:</p>
+                    <p style="font-size: 16px;">Build log: <a href="${BUILD_URL}console">${BUILD_URL}console</a></p>
+                </body>
+                </html>
+                ''',
+                mimeType: 'text/html',
+                attachLog: true,
+                to: 'hvenuka@gmail.com'
+        }
+        success {
+            // Send a success notification email with styled content
+            emailext subject: 'Pipeline Succeeded',
+                body: '''
+                <html>
+                <body>
+                    <h2 style="color: green;">Pipeline Succeeded</h2>
+                    <p style="font-size: 16px;">The Jenkins pipeline has succeeded.</p>
+                    <p style="font-size: 16px;">You can view the build log <a href="${BUILD_URL}console">${BUILD_URL}console</a>.</p>
+                </body>
+                </html>
+                ''',
+                mimeType: 'text/html',
+                attachLog: true,
+                to: 'hvenuka@gmail.com'
+        }
+    }
+}
